@@ -1,0 +1,27 @@
+{
+  "name": "@ryuring/basercms-js-sdk",
+  "version": "0.0.1",
+  "description": "baserCMS Api を利用するためのパッケージ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "npm run build",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ryuring/basercms-js-sdk.git"
+  },
+  "author": "ryuring",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryuring/basercms-js-sdk/issues"
+  },
+  "homepage": "https://github.com/ryuring/basercms-js-sdk#readme",
+  "dependencies": {
+    "@types/node": "^22.13.10",
+    "axios": "^1.8.2",
+    "https": "^1.0.0",
+    "typescript": "^5.8.2"
+  }
+}
