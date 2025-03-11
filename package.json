@@ -1,6 +1,6 @@
 {
   "name": "@ryuring/basercms-js-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "baserCMS Api を利用するためのパッケージ",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,6 @@
   "dependencies": {
     "@types/node": "^22.13.10",
     "axios": "^1.8.2",
-    "https": "^1.0.0",
     "typescript": "^5.8.2"
   }
 }
