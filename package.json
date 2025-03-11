@@ -1,8 +1,8 @@
 {
   "name": "@ryuring/basercms-js-sdk",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "baserCMS Api を利用するためのパッケージ",
-  "main": "index.js",
+  "main": "dist/basercms-blog.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
