@@ -1,2 +1,2 @@
-export { BlogPost, Client } from "./basercms-js-sdk";
-export { getBlogPost, getBlogPosts } from "./basercms-blog";
+export { Client } from "./basercms-js-sdk";
+export { BlogPost, getBlogPost, getBlogPosts } from "./basercms-blog";

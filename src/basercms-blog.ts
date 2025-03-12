@@ -1,9 +1,20 @@
-import { type BlogPost, Client } from './basercms-js-sdk';
+import { Client } from './basercms-js-sdk';
+import dotenv from "dotenv";
+dotenv.config();
 
-const BASE_URL = 'https://baser-astro.localhost';
+const BASE_URL = process.env.API_BASE_URL;
 const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
 
-const client = new Client();
+const client = new Client({ apiBaseUrl: BASE_URL });
+
+interface BlogPost {
+    id: number;
+    title: string;
+    content: string;
+    detail: string;
+    eye_catch: string;
+    posted: string;
+}
 
 const formatEyeCatch = (blogPost: BlogPost): BlogPost => ({
     ...blogPost,
@@ -22,3 +33,5 @@ export const getBlogPost = async (id: string): Promise<BlogPost | null> => {
     const response = await client.getView({ endpoint: "blogPosts", id });
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
 };
+
+export type { BlogPost };
