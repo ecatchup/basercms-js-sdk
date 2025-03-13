@@ -90,5 +90,5 @@ class ApiClient {
     
 }
 
-export type {GetIndexRequest, GetViewRequest};
-export {ApiClient};
+export type { GetIndexRequest, GetViewRequest };
+export { ApiClient };

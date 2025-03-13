@@ -48,4 +48,5 @@ const getBlogPost = async (id: string): Promise<BlogPost | null> => {
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
 };
 
-export type { BlogPost, getBlogPosts, getBlogPost };
+export { getBlogPosts, getBlogPost };
+export type { BlogPost };
