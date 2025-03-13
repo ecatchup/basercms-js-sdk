@@ -11,11 +11,17 @@ const apiClient = new ApiClient({ apiBaseUrl: BASE_URL });
  */
 interface BlogPost {
     id: number;
+    blog_content_id: number;
+    no: number;
+    name: string;
     title: string;
     content: string;
     detail: string;
-    eye_catch: string;
+    blog_category: {};
+    user_id: number;
+    status: number;
     posted: string;
+    eye_catch: string;
 }
 
 /**
