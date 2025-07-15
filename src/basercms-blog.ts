@@ -1,4 +1,5 @@
 import { ApiClient } from './basercms-js-sdk';
+import { login as userLogin } from './basercms-user';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -49,10 +50,41 @@ const getBlogPosts = async (options?: {}): Promise<BlogPost[]> => {
  * Get blog post
  * @param id
  */
+
+type BlogPostResponse = { blogPost: BlogPost };
+
 const getBlogPost = async (id: string): Promise<BlogPost | null> => {
-    const response = await apiClient.getView({ endpoint: "blogPosts", id });
+    const response = await apiClient.getView({ endpoint: "blogPosts", id }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
 };
 
 export { getBlogPosts, getBlogPost };
 export type { BlogPost };
+
+/**
+ * BlogPostを追加
+ * @param data BlogPostの内容（id, posted, eye_catch以外）
+ */
+
+
+/**
+ * ログインしてブログ記事を追加
+ * @param email メールアドレス
+ * @param password パスワード
+ * @param data 記事データ
+ */
+const addBlogPost = async (
+  email: string,
+  password: string,
+  data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
+): Promise<BlogPost | null> => {
+  const token = await userLogin(email, password);
+  if (!token) {
+    console.error('ログイン失敗: email, password, token:', email, password, token);
+    throw new Error('ログイン失敗');
+  }
+  const response = await apiClient.post({ endpoint: "blogPosts", data }) as BlogPostResponse | null;
+  return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+};
+
+export { addBlogPost };
