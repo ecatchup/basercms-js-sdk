@@ -1,9 +1,5 @@
 import { ApiClient } from './basercms-js-sdk';
-import dotenv from 'dotenv';
-dotenv.config();
-
-const BASE_URL = process.env.API_BASE_URL || 'https://localhost';
-const apiClient = new ApiClient({ apiBaseUrl: BASE_URL });
+const apiClient = new ApiClient();
 import axiosBase from 'axios';
 
 /**

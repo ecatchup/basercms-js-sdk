@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const BASE_URL = process.env.API_BASE_URL;
 const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
-const apiClient = new ApiClient({ apiBaseUrl: BASE_URL });
+const apiClient = new ApiClient();
 
 /**
  * BlogPost
