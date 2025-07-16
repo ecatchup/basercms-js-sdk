@@ -1,8 +1,4 @@
 import { ApiClient } from './basercms-js-sdk';
-import { login as userLogin } from './bc-user';
-import dotenv from "dotenv";
-
-dotenv.config();
 const BASE_URL = process.env.API_BASE_URL;
 const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
 

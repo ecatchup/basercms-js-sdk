@@ -1,10 +1,10 @@
 
 import axios, { AxiosInstance } from 'axios';
-import dotenv from 'dotenv';
+// dotenvは不要
 import { login as userLogin } from './bc-user';
 import https from 'https';
 
-dotenv.config();
+// dotenvは不要
 
 /**
  * GetIndexRequest

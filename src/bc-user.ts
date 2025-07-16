@@ -1,8 +1,5 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 import https from 'https';
-
-dotenv.config();
 
 /**
  * 管理者API用のJWTトークンを取得
