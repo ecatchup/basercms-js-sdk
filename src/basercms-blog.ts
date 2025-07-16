@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const BASE_URL = process.env.API_BASE_URL;
 const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
-const apiClient = new ApiClient();
 
 /**
  * BlogPost
@@ -13,12 +12,12 @@ const apiClient = new ApiClient();
 interface BlogPost {
     id: number;
     blog_content_id: number;
-    no: number;
+    no: number|null;
     name: string;
     title: string;
     content: string;
     detail: string;
-    blog_category: {};
+    blog_category_id: number;
     user_id: number;
     status: number;
     posted: string;
@@ -38,7 +37,7 @@ const formatEyeCatch = (blogPost: BlogPost): BlogPost => ({
  * Get blog posts
  * @param options
  */
-const getBlogPosts = async (options?: {}): Promise<BlogPost[]> => {
+const getBlogPosts = async (apiClient: ApiClient, options?: {}): Promise<BlogPost[]> => {
     const response = await apiClient.getIndex({ endpoint: "blogPosts", ...options });
     if (!response || !response.blogPosts) {
         return [];
@@ -53,7 +52,7 @@ const getBlogPosts = async (options?: {}): Promise<BlogPost[]> => {
 
 type BlogPostResponse = { blogPost: BlogPost };
 
-const getBlogPost = async (id: string): Promise<BlogPost | null> => {
+const getBlogPost = async (apiClient: ApiClient, id: string): Promise<BlogPost | null> => {
     const response = await apiClient.getView({ endpoint: "blogPosts", id }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
 };
@@ -74,16 +73,10 @@ export type { BlogPost };
  * @param data 記事データ
  */
 const addBlogPost = async (
-  email: string,
-  password: string,
+  apiClient: ApiClient,
   data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
 ): Promise<BlogPost | null> => {
-  const token = await userLogin(email, password);
-  if (!token) {
-    console.error('ログイン失敗: email, password, token:', email, password, token);
-    throw new Error('ログイン失敗');
-  }
-  const response = await apiClient.post({ endpoint: "blogPosts", data }) as BlogPostResponse | null;
+  const response = await apiClient.add({ endpoint: "blogPosts", data }) as BlogPostResponse | null;
   return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
 };
 

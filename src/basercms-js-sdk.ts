@@ -23,22 +23,6 @@ type GetViewRequest = {
  * Client
  */
 class ApiClient {
-    private accessToken: string | null = null;
-    /**
-     * レコードを追加
-     * @param endpoint
-     * @param data
-     */
-    async post<T>({ endpoint, data }: { endpoint: string; data: any }): Promise<T | null> {
-        const url = `/baser/api/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json`;
-        try {
-            const response = await this.axiosInstance.post(url, data);
-            return response.data;
-        } catch (error) {
-            console.error('post error:', error);
-            return null;
-        }
-    }
 
     /**
      * Route
@@ -61,12 +45,6 @@ class ApiClient {
      * Constructor
      * @param apiBaseUrl
      */
-    /**
-     * コンストラクタ
-     * @param options.apiBaseUrl APIのベースURL
-     * @param options.email メールアドレス（任意）
-     * @param options.password パスワード（任意）
-     */
     constructor() {
         const apiBaseUrl = process.env.API_BASE_URL || 'https://localhost';
         const agent = new https.Agent({rejectUnauthorized: false});
@@ -74,29 +52,40 @@ class ApiClient {
             baseURL: apiBaseUrl,
             headers: {
                 'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
             },
             httpsAgent: agent,
             responseType: 'json'
         });
-        // .envから自動でログイン
-        const loginUser = process.env.API_USER;
-        const loginPassword = process.env.API_PASSWORD;
-        if (loginUser && loginPassword) {
-            this.login(loginUser, loginPassword);
-        }
     }
 
     /**
      * ラッパー: basercms-user.ts の login を呼び出し、トークンを内部に保持
      */
-    async login(user: string, password: string): Promise<string | null> {
-        const token = await userLogin(user, password);
-        if (token) {
-            this.accessToken = token;
-            this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+    async login(): Promise<void> {
+        const loginUser = process.env.API_USER;
+        const loginPassword = process.env.API_PASSWORD;
+        if (!loginUser || !loginPassword) {
+            throw new Error('API_USER または API_PASSWORD が設定されていません。');
         }
-        return token;
+        const token = await userLogin(loginUser, loginPassword);
+        this.axiosInstance.defaults.headers['Authorization'] = "Bearer " + token;
+    }
+
+    /**
+     * レコードを追加
+     * @param endpoint
+     * @param data
+     */
+    async add<T>({ endpoint, data }: { endpoint: string; data: any }): Promise<T | null> {
+        const url = `/baser/api/admin/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json`;
+        try {
+            const response = await this.axiosInstance.post(url, data);
+            return response.data;
+        } catch (error) {
+            console.error('add error:', error);
+            return null;
+        }
     }
 
     /**
