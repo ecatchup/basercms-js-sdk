@@ -77,9 +77,13 @@ export class ApiClient {
     try {
       const response = await this.axiosInstance.post(url, data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('add error:', error);
-      return null;
+      // バリデーションエラー等の詳細を呼び出し元で取得できるようにする
+      if (error.response && error.response.data) {
+        throw error.response.data;
+      }
+      throw error;
     }
   }
 

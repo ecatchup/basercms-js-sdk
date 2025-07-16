@@ -66,14 +66,35 @@ const getBlogPost = async (apiClient: ApiClient, id: string): Promise<BlogPost |
  * @param data 記事データ（id, posted, eye_catch以外）
  * @returns 追加後の整形済みブログ記事 or null
  */
+type AddBlogPostResult = BlogPost | { errors: any } | null;
+
 const addBlogPost = async (
   apiClient: ApiClient,
   data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
-): Promise<BlogPost | null> => {
-  const response = await apiClient.add({ endpoint: "blogPosts", data }) as BlogPostResponse | null;
-  return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+): Promise<AddBlogPostResult> => {
+  try {
+    const response = await apiClient.add({ endpoint: "blogPosts", data }) as any;
+    if (response?.blogPost) {
+      return formatEyeCatch(response.blogPost);
+    }
+    if (response?.errors) {
+      return { errors: response.errors };
+    }
+    return null;
+  } catch (error: any) {
+    console.error('add error:', error);
+    if (error.response) {
+      console.error('error.response:', error.response);
+    }
+    if (error.response && error.response.data) {
+      console.error('error.response.data:', error.response.data);
+    }
+    if (error.response && error.response.data && error.response.data.errors) {
+      throw new Error(JSON.stringify({ errors: error.response.data.errors }));
+    }
+    throw error;
+  }
 };
-
 /**
  * ブログ記事を編集
  * @param apiClient ApiClientインスタンス
