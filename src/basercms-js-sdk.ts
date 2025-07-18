@@ -1,10 +1,7 @@
 
 import axios, { AxiosInstance } from 'axios';
-// dotenvは不要
-import { login as userLogin } from './bc-user';
+import { login as userLogin } from './bc-users';
 import https from 'https';
-
-// dotenvは不要
 
 /**
  * GetIndexRequest
@@ -13,7 +10,6 @@ interface GetIndexRequest {
   endpoint: string;
   options?: Record<string, any>;
 }
-
 
 /**
  * GetViewRequest
@@ -34,6 +30,18 @@ export class ApiClient {
     blogPosts: {
       plugin: 'bc-blog',
       controller: 'blog_posts',
+    },
+    users: {
+      plugin: 'baser-core',
+      controller: 'users',
+    },
+    blogCategories: {
+      plugin: 'bc-blog',
+      controller: 'blog_categories',
+    },
+    blogContents: {
+      plugin: 'bc-blog',
+      controller: 'blog_contents',
     },
   };
 
@@ -72,8 +80,13 @@ export class ApiClient {
   /**
    * レコード追加
    */
-  public async add<T>({ endpoint, data }: { endpoint: string; data: any }): Promise<T | null> {
-    const url = `/baser/api/admin/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json`;
+  public async add<T>({ endpoint, data, options }: { endpoint: string; data: any; options?: Record<string, any> }): Promise<T | null> {
+    let baseUrl = '/baser/api/';
+    if (options && options['admin'] !== undefined) {
+      baseUrl += 'admin/';
+      delete options['admin'];
+    }
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json`;
     try {
       const response = await this.axiosInstance.post(url, data);
       return response.data;
@@ -90,8 +103,13 @@ export class ApiClient {
   /**
    * レコード編集
    */
-  public async edit<T>({ endpoint, id, data }: { endpoint: string; id: string; data: any }): Promise<T | null> {
-    const url = `/baser/api/admin/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/edit/${id}.json`;
+  public async edit<T>({ endpoint, id, data, options }: { endpoint: string; id: string; data: any; options?: Record<string, any> }): Promise<T | null> {
+    let baseUrl = '/baser/api/';
+    if (options && options['admin'] !== undefined) {
+      baseUrl += 'admin/';
+      delete options['admin'];
+    }
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/edit/${id}.json`;
     try {
       const response = await this.axiosInstance.post(url, { ...data, id });
       return response.data;
@@ -104,8 +122,13 @@ export class ApiClient {
   /**
    * レコード削除
    */
-  public async delete<T>({ endpoint, id }: { endpoint: string; id: string }): Promise<T | null> {
-    const url = `/baser/api/admin/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/delete/${id}.json`;
+  public async delete<T>({ endpoint, id, options}: { endpoint: string; id: string; options?: Record<string, any> }): Promise<T | null> {
+    let baseUrl = '/baser/api/';
+    if (options && options['admin'] !== undefined) {
+      baseUrl += 'admin/';
+      delete options['admin'];
+    }
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/delete/${id}.json`;
     try {
       const response = await this.axiosInstance.post(url, { id });
       return response.data;
@@ -119,8 +142,13 @@ export class ApiClient {
    * 複数レコード取得
    */
   public async getIndex<T>({ endpoint, options }: GetIndexRequest): Promise<T | null> {
+    let baseUrl = '/baser/api/';
+    if (options && options['admin'] !== undefined) {
+      baseUrl += 'admin/';
+      delete options['admin'];
+    }
     const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
-    const url = `/baser/api/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/index.json${query}`;
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/index.json${query}`;
     try {
       const response = await this.axiosInstance.get(url);
       return response.data;
@@ -133,8 +161,13 @@ export class ApiClient {
   /**
    * 単一レコード取得
    */
-  public async getView<T>({ endpoint, id }: GetViewRequest): Promise<T | null> {
-    const url = `/baser/api/${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/view/${id}.json`;
+  public async getView<T>({ endpoint, id, options }: GetViewRequest): Promise<T | null> {
+    let baseUrl = '/baser/api/';
+    if (options && options['admin'] !== undefined) {
+      baseUrl += 'admin/';
+      delete options['admin'];
+    }
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/view/${id}.json`;
     try {
       const response = await this.axiosInstance.get(url);
       return response.data;

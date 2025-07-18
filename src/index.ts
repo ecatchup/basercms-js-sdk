@@ -1,3 +1,4 @@
 export { ApiClient } from "./basercms-js-sdk";
-export { getBlogPost, getBlogPosts, addBlogPost } from "./bc-blog-post";
-export type { BlogPost } from "./bc-blog-post";
+export { getBlogPost, getBlogPosts, addBlogPost } from "./bc-blog-posts";
+export type { BlogPost } from "./bc-blog-posts";
+export { login, getUserByEmail } from "./bc-users";
