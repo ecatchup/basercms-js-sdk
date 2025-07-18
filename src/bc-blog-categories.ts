@@ -29,13 +29,12 @@ interface GetBlogCategoriesResult {
 }
 
 const getBlogCategories = async (
+    apiClient: ApiClient,
     blogContentId: number,
     options: GetBlogCategoriesOptions = {}
 ): Promise<BlogCategory[] | null> => {
-    const client = new ApiClient();
-    await client.login();
     // blogCategories コントローラーの index API を利用
-    const result: GetBlogCategoriesResult | null = await client.getIndex<GetBlogCategoriesResult>({
+    const result: GetBlogCategoriesResult | null = await apiClient.getIndex<GetBlogCategoriesResult>({
         endpoint: 'blogCategories',
         options: { blog_content_id: blogContentId, ...options }
     });

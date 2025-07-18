@@ -34,11 +34,11 @@ import { ApiClient } from './basercms-js-sdk';
  * @param email メールアドレス
  * @returns ユーザーデータ or null
  */
-const getUserByEmail = async (email: string): Promise<any | null> => {
-  const client = new ApiClient();
-  await client.login();
+const getUserByEmail = async (
+  apiClient: ApiClient,
+  email: string): Promise<any | null> => {
   // users コントローラーの index API を利用
-  const result = await client.getIndex<any>({ endpoint: 'users', options: { email, admin: true } });
+  const result = await apiClient.getIndex<any>({ endpoint: 'users', options: { email, admin: true } });
   if (result?.user) return result.user;
   if (result?.users && Array.isArray(result.users) && result.users.length > 0) return result.users[0];
   return null;
@@ -50,11 +50,10 @@ const getUserByEmail = async (email: string): Promise<any | null> => {
  * @param id ユーザーID
  * @returns ユーザーデータ or null
  */
-const getUser = async (id: string): Promise<any | null> => {
-  const client = new ApiClient();
-  await client.login();
-  // users コントローラーの view API を利用
-  const result = await client.getView<any>({ endpoint: 'users', id, options: { admin: true } });
+const getUser = async (
+  apiClient: ApiClient,
+  id: string): Promise<any | null> => {
+  const result = await apiClient.getView<any>({ endpoint: 'users', id, options: { admin: true } });
   if (result?.user) return result.user;
   return null;
 };
@@ -65,11 +64,10 @@ const getUser = async (id: string): Promise<any | null> => {
  * @param options 検索オプション
  * @returns ユーザー配列 or null
  */
-const getUsers = async (options: Record<string, any> = {}): Promise<any[] | null> => {
-  const client = new ApiClient();
-  await client.login();
-  // users コントローラーの index API を利用
-  const result = await client.getIndex<any>({ endpoint: 'users', options: { ...options, admin: true } });
+const getUsers = async (
+  apiClient: ApiClient,
+  options: Record<string, any> = {}): Promise<any[] | null> => {
+  const result = await apiClient.getIndex<any>({ endpoint: 'users', options: { ...options, admin: true } });
   if (result?.users && Array.isArray(result.users)) return result.users;
   return null;
 };
