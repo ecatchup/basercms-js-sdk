@@ -73,7 +73,7 @@ const addBlogPost = async (
   data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
 ): Promise<AddBlogPostResult> => {
   try {
-    const response = await apiClient.add({ endpoint: "blogPosts", data }) as any;
+    const response = await apiClient.add({ endpoint: "blogPosts", data, options: { admin: true } }) as any;
     if (response?.blogPost) {
       return formatEyeCatch(response.blogPost);
     }
