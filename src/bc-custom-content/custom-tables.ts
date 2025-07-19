@@ -91,8 +91,8 @@ export const deleteCustomTable = async (
   try {
     await apiClient.delete({ endpoint: 'customTables', id, options: { admin: true } });
     return true;
-  } catch (error) {
-    console.error('deleteCustomTable error:', error);
-    return false;
+  } catch (error: any) {
+    console.error('deleteCustomTable error:', error.message);
+    throw error;
   }
 };

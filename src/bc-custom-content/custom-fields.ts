@@ -102,8 +102,8 @@ export const deleteCustomField = async (
   try {
     await apiClient.delete({ endpoint: 'customFields', id, options: { admin: true } });
     return true;
-  } catch (error) {
-    console.error('deleteCustomField error:', error);
-    return false;
+  } catch (error: any) {
+    console.error('deleteCustomField error:', error.message);
+    throw error;
   }
 };

@@ -92,8 +92,8 @@ export const deleteCustomContent = async (
   try {
     await apiClient.delete({ endpoint: 'customContents', id, options: { admin: true } });
     return true;
-  } catch (error) {
-    console.error('deleteCustomContent error:', error);
-    return false;
+  } catch (error: any) {
+    console.error('deleteCustomContent error:', error.message);
+    throw error;
   }
 };
