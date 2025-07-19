@@ -1,0 +1,1 @@
+basercms-js-sdk works.
