@@ -1,6 +1,6 @@
 
 import axios, { AxiosInstance } from 'axios';
-import { login as userLogin } from './bc-users';
+import { login as userLogin } from './baser-core/users';
 import https from 'https';
 
 /**
@@ -73,8 +73,12 @@ export class ApiClient {
     if (!loginUser || !loginPassword) {
       throw new Error('API_USER または API_PASSWORD が設定されていません。');
     }
-    const token = await userLogin(loginUser, loginPassword);
-    this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+    try {
+      const token = await userLogin(loginUser, loginPassword);
+      this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+    } catch (error: any) {
+      throw error;
+    }
   }
 
   /**
@@ -91,10 +95,13 @@ export class ApiClient {
       const response = await this.axiosInstance.post(url, data);
       return response.data;
     } catch (error: any) {
-      console.error('add error:', error);
-      // バリデーションエラー等の詳細を呼び出し元で取得できるようにする
-      if (error.response && error.response.data) {
-        throw error.response.data;
+      if (
+        error.code === 'ECONNREFUSED' ||
+        error.code === 'ENOTFOUND' ||
+        error.code === 'ETIMEDOUT' ||
+        (error.response && (error.response.status === 503 || error.response.status === 502 || error.response.status === 504))
+      ) {
+        throw new Error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。');
       }
       throw error;
     }
@@ -113,7 +120,11 @@ export class ApiClient {
     try {
       const response = await this.axiosInstance.post(url, { ...data, id });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+        console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
+        return null;
+      }
       console.error('edit error:', error);
       return null;
     }
@@ -132,7 +143,11 @@ export class ApiClient {
     try {
       const response = await this.axiosInstance.post(url, { id });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+        console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
+        return null;
+      }
       console.error('delete error:', error);
       return null;
     }
@@ -152,7 +167,11 @@ export class ApiClient {
     try {
       const response = await this.axiosInstance.get(url);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+        console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
+        return null;
+      }
       console.error('getIndex error:', error);
       return null;
     }
@@ -171,7 +190,11 @@ export class ApiClient {
     try {
       const response = await this.axiosInstance.get(url);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT') {
+        console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
+        return null;
+      }
       console.error('getView error:', error);
       return null;
     }

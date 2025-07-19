@@ -1,5 +1,5 @@
 
-import { ApiClient } from './basercms-js-sdk';
+import { ApiClient } from '../basercms-js-sdk';
 
 /**
  * ブログカテゴリ一覧を取得（ApiClientのgetIndexを利用）
@@ -33,13 +33,17 @@ const getBlogCategories = async (
     blogContentId: number,
     options: GetBlogCategoriesOptions = {}
 ): Promise<BlogCategory[] | null> => {
-    // blogCategories コントローラーの index API を利用
-    const result: GetBlogCategoriesResult | null = await apiClient.getIndex<GetBlogCategoriesResult>({
-        endpoint: 'blogCategories',
-        options: { blog_content_id: blogContentId, ...options }
-    });
-    if (result?.blogCategories && Array.isArray(result.blogCategories)) return result.blogCategories;
-    return null;
+    try {
+        const result: GetBlogCategoriesResult | null = await apiClient.getIndex<GetBlogCategoriesResult>({
+            endpoint: 'blogCategories',
+            options: { blog_content_id: blogContentId, ...options }
+        });
+        if (result?.blogCategories && Array.isArray(result.blogCategories)) return result.blogCategories;
+        return null;
+    } catch (error: any) {
+        console.error('getBlogCategories error:', error.message);
+        throw error;
+    }
 };
 
 export { getBlogCategories };

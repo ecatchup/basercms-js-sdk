@@ -1,4 +1,4 @@
-import { ApiClient } from './basercms-js-sdk';
+import { ApiClient } from '../basercms-js-sdk';
 const BASE_URL = process.env.API_BASE_URL;
 const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
 
@@ -37,11 +37,16 @@ const formatEyeCatch = (blogPost: BlogPost): BlogPost => ({
  * @returns 整形済みブログ記事配列
  */
 const getBlogPosts = async (apiClient: ApiClient, options?: {}): Promise<BlogPost[]> => {
-  const response: any = await apiClient.getIndex({ endpoint: "blogPosts", ...options });
-  if (!response || !response.blogPosts) {
-    return [];
+  try {
+    const response: any = await apiClient.getIndex({ endpoint: "blogPosts", ...options });
+    if (!response || !response.blogPosts) {
+      return [];
+    }
+    return response.blogPosts.map((post: any): BlogPost => formatEyeCatch(post)) ?? [];
+  } catch (error: any) {
+    console.error('getBlogPosts error:', error.message);
+    throw error;
   }
-  return response.blogPosts.map((post: any): BlogPost => formatEyeCatch(post)) ?? [];
 };
 
 /**
@@ -56,8 +61,13 @@ type BlogPostResponse = { blogPost: BlogPost };
  * @returns 整形済みブログ記事 or null
  */
 const getBlogPost = async (apiClient: ApiClient, id: string): Promise<BlogPost | null> => {
-  const response = await apiClient.getView({ endpoint: "blogPosts", id }) as BlogPostResponse | null;
-  return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+  try {
+    const response = await apiClient.getView({ endpoint: "blogPosts", id }) as BlogPostResponse | null;
+    return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+  } catch (error: any) {
+    console.error('getBlogPost error:', error.message);
+    throw error;
+  }
 };
 
 /**
@@ -82,16 +92,11 @@ const addBlogPost = async (
     }
     return null;
   } catch (error: any) {
-    console.error('add error:', error);
-    if (error.response) {
-      console.error('error.response:', error.response);
+    if (error.status === 400) {
+      console.error('addBlogPost error:', error.message);  
+      throw new Error(`Validation error: ${JSON.stringify(error.response?.data?.errors || {})}`);
     }
-    if (error.response && error.response.data) {
-      console.error('error.response.data:', error.response.data);
-    }
-    if (error.response && error.response.data && error.response.data.errors) {
-      throw new Error(JSON.stringify({ errors: error.response.data.errors }));
-    }
+    console.error('addBlogPost error:', error.message);
     throw error;
   }
 };
@@ -111,9 +116,9 @@ const editBlogPost = async (
   try {
     const response = await apiClient.edit({ endpoint: "blogPosts", id, data }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
-  } catch (error) {
-    console.error('editBlogPost error:', error);
-    return null;
+  } catch (error: any) {
+    console.error('editBlogPost error:', error.message);
+    throw error;
   }
 };
 
@@ -130,9 +135,9 @@ const deleteBlogPost = async (
   try {
     await apiClient.delete({ endpoint: "blogPosts", id });
     return true;
-  } catch (error) {
-    console.error('deleteBlogPost error:', error);
-    return false;
+  } catch (error: any) {
+    console.error('deleteBlogPost error:', error.message);
+    throw error;
   }
 };
 
