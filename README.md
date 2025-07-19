@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-npm intall @ecatchup/basercms-js-sdk
+npm intall @ryuring/basercms-js-sdk
 ```
 
 ルートに .env を配置する
@@ -19,8 +19,8 @@ API_PASSWORD="baserCMS1234"
 ブログ記事一覧を取得する
 
 ```javascript
-import { apiClinet, getBlogPosts } from "@ecatchup/basercms-js-sdk";
-import type { BlogPost } from "@ecatchup/basercms-js-sdk";
+import { apiClinet, getBlogPosts } from "@ryuring/basercms-js-sdk";
+import type { BlogPost } from "@ryuring/basercms-js-sdk";
 
 const posts = await getBlogPosts(new ApiClient());
 posts.map((post: BlogPost) => {
@@ -37,8 +37,8 @@ posts.map((post: BlogPost) => {
 id を指定してブログ記事を取得する
 
 ```javascript
-import { apiClient, getBlogPost } from "@ecatchup/basercms-js-sdk";
-import type { BlogPost } from "@ecatchup/basercms-js-sdk";
+import { apiClient, getBlogPost } from "@ryuring/basercms-js-sdk";
+import type { BlogPost } from "@ryuring/basercms-js-sdk";
 
 const post = await getBlogPost(new ApiClient(), 1);
 console.log(post.id);
@@ -52,8 +52,8 @@ console.log(post.eye_catch);
 ### addBlogPost
 ブログ記事を追加する
 ```javascript
-import { apiClient, addBlogPost } from "@ecatchup/basercms-js-sdk";
-import type { BlogPost } from "@ecatchup/basercms-js-sdk";
+import { apiClient, addBlogPost } from "@ryuring/basercms-js-sdk";
+import type { BlogPost } from "@ryuring/basercms-js-sdk";
 
 const data: BlogPost = { blog_content_id: 1, no: null, name: '', title: 'ダミー記事', content: 'ダミー本文', detail: 'ダミー詳細', blog_category_id: 1, user_id: 1, status: 1, posted: '2025-07-01 00:00:00' };
 
