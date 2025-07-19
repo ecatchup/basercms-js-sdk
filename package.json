@@ -1,6 +1,6 @@
 {
   "name": "@ryuring/basercms-js-sdk",
-  "version": "0.0.19",
+  "version": "1.0.0",
   "description": "baserCMS の API を利用するためのパッケージ",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
