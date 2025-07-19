@@ -43,6 +43,18 @@ export class ApiClient {
       plugin: 'bc-blog',
       controller: 'blog_contents',
     },
+    customFields: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_fields',
+    },
+    customTables: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_tables',
+    },
+    customContents: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_contents',
+    },
   };
 
   /**
@@ -125,8 +137,7 @@ export class ApiClient {
         console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
         return null;
       }
-      console.error('edit error:', error);
-      return null;
+      throw error;
     }
   }
 
@@ -148,8 +159,7 @@ export class ApiClient {
         console.error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。', error.message);
         return null;
       }
-      console.error('delete error:', error);
-      return null;
+      throw error;
     }
   }
 

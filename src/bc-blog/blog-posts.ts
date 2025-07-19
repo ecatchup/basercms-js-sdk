@@ -117,6 +117,10 @@ const editBlogPost = async (
     const response = await apiClient.edit({ endpoint: "blogPosts", id, data }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
   } catch (error: any) {
+    if (error.status === 400) {
+      console.error('editBlogPost error:', error.message);  
+      throw new Error(`Validation error: ${JSON.stringify(error.response?.data?.errors || {})}`);
+    }
     console.error('editBlogPost error:', error.message);
     throw error;
   }

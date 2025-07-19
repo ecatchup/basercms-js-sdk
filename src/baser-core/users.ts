@@ -37,6 +37,23 @@ const login = async (email: string, password: string): Promise<string | null> =>
 import { ApiClient } from '../basercms-js-sdk';
 
 /**
+ * ユーザー型定義
+ */
+export interface User {
+  id: number;
+  name: string;
+  password: string;
+  real_name_1: string;
+  real_name_2: string;
+  email: string;
+  nickname: string;
+  password_modified: string;
+  created: string;
+  modified: string;
+  status: number;
+}
+
+/**
  * Eメールアドレスからユーザーデータを取得（ApiClientのgetIndexを利用）
  * @param email メールアドレス
  * @returns ユーザーデータ or null
