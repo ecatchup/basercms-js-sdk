@@ -14,6 +14,7 @@ export {
   deleteCustomContent
 } from "./bc-custom-content/custom-contents";
 export type { CustomContent } from "./bc-custom-content/custom-contents";
+export * from './bc-custom-content/custom-entries';
 export { ApiClient } from "./basercms-js-sdk";
 export {
     getBlogPost,

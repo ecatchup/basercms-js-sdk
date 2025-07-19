@@ -51,10 +51,14 @@ export class ApiClient {
       plugin: 'bc-custom-content',
       controller: 'custom_tables',
     },
-    customContents: {
-      plugin: 'bc-custom-content',
-      controller: 'custom_contents',
-    },
+        customContents: {
+          plugin: 'bc-custom-content',
+          controller: 'custom_contents',
+        },
+        customEntries: {
+          plugin: 'bc-custom-content',
+          controller: 'custom_entries',
+        },
   };
 
   /**
@@ -98,11 +102,13 @@ export class ApiClient {
    */
   public async add<T>({ endpoint, data, options }: { endpoint: string; data: any; options?: Record<string, any> }): Promise<T | null> {
     let baseUrl = '/baser/api/';
-    if (options && options['admin'] !== undefined) {
+    let opts = options ? { ...options } : undefined;
+    if (opts && opts['admin'] !== undefined) {
       baseUrl += 'admin/';
-      delete options['admin'];
+      delete opts['admin'];
     }
-    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json`;
+    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json${query}`;
     try {
       const response = await this.axiosInstance.post(url, data);
       return response.data;
@@ -124,11 +130,13 @@ export class ApiClient {
    */
   public async edit<T>({ endpoint, id, data, options }: { endpoint: string; id: string; data: any; options?: Record<string, any> }): Promise<T | null> {
     let baseUrl = '/baser/api/';
-    if (options && options['admin'] !== undefined) {
+    let opts = options ? { ...options } : undefined;
+    if (opts && opts['admin'] !== undefined) {
       baseUrl += 'admin/';
-      delete options['admin'];
+      delete opts['admin'];
     }
-    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/edit/${id}.json`;
+    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/edit/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.post(url, { ...data, id });
       return response.data;
@@ -146,11 +154,13 @@ export class ApiClient {
    */
   public async delete<T>({ endpoint, id, options}: { endpoint: string; id: string; options?: Record<string, any> }): Promise<T | null> {
     let baseUrl = '/baser/api/';
-    if (options && options['admin'] !== undefined) {
+    let opts = options ? { ...options } : undefined;
+    if (opts && opts['admin'] !== undefined) {
       baseUrl += 'admin/';
-      delete options['admin'];
+      delete opts['admin'];
     }
-    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/delete/${id}.json`;
+    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/delete/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.post(url, { id });
       return response.data;
@@ -192,11 +202,13 @@ export class ApiClient {
    */
   public async getView<T>({ endpoint, id, options }: GetViewRequest): Promise<T | null> {
     let baseUrl = '/baser/api/';
-    if (options && options['admin'] !== undefined) {
+    let opts = options ? { ...options } : undefined;
+    if (opts && opts['admin'] !== undefined) {
       baseUrl += 'admin/';
-      delete options['admin'];
+      delete opts['admin'];
     }
-    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/view/${id}.json`;
+    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/view/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.get(url);
       return response.data;
