@@ -11,6 +11,7 @@ export interface CustomTable {
   title: string;
   display_field: string;
   has_child: number;
+  custom_links?: any;
   created: string;
   modified: string;
 }
@@ -66,7 +67,7 @@ export const addCustomTable = async (
 export const editCustomTable = async (
   apiClient: ApiClient,
   id: string,
-  data: Partial<Omit<CustomTable, 'id'>>
+  data: Partial<CustomTable>
 ): Promise<CustomTable | null> => {
   try {
     const response: any = await apiClient.edit({ endpoint: 'customTables', id, data, options: { admin: true } });
