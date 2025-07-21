@@ -43,3 +43,4 @@ export {
     deleteCustomField
 } from "./bc-custom-content/custom-fields";
 export type { CustomField } from "./bc-custom-content/custom-fields";
+export { getCustomLink, getCustomLinks } from "./bc-custom-content/custom-links";

@@ -50,14 +50,18 @@ export class ApiClient {
       plugin: 'bc-custom-content',
       controller: 'custom_tables',
     },
-        customContents: {
-          plugin: 'bc-custom-content',
-          controller: 'custom_contents',
-        },
-        customEntries: {
-          plugin: 'bc-custom-content',
-          controller: 'custom_entries',
-        },
+    customContents: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_contents',
+    },
+    customEntries: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_entries',
+    },
+    customLinks: {
+      plugin: 'bc-custom-content',
+      controller: 'custom_links',
+    }
   };
 
   /**
