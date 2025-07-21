@@ -1,4 +1,3 @@
-
 import axios, { AxiosInstance } from 'axios';
 import { login as userLogin } from './baser-core/users';
 import https from 'https';
@@ -109,8 +108,50 @@ export class ApiClient {
     }
     const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json${query}`;
+
+    // どのフィールドでもファイル型があればmultipart/form-dataで送信
+    let sendData = data;
+    let config: any = {};
+    const isFile = (v: any) => {
+      if (!v) return false;
+      if (typeof window !== 'undefined') {
+        // ブラウザ
+        return v instanceof File || v instanceof Blob;
+      } else {
+        // Node.js
+        return (typeof Buffer !== 'undefined' && Buffer.isBuffer(v)) || (v && typeof v.pipe === 'function');
+      }
+    };
+    const hasFileField = data && Object.values(data).some(isFile);
+    if (hasFileField) {
+      let formData: any;
+      if (typeof window === 'undefined') {
+        // Node.js
+        const FormData = require('form-data');
+        formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+          if (value === undefined || value === null) return;
+          if (isFile(value)) {
+            formData.append(key, value);
+          } else {
+            formData.append(key, String(value));
+          }
+        });
+        sendData = formData;
+        config.headers = formData.getHeaders();
+      } else {
+        // ブラウザ
+        formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+          if (value === undefined || value === null) return;
+          formData.append(key, value);
+        });
+        sendData = formData;
+        // headersは自動
+      }
+    }
     try {
-      const response = await this.axiosInstance.post(url, data);
+      const response = await this.axiosInstance.post(url, sendData, config);
       return response.data;
     } catch (error: any) {
       if (

@@ -80,7 +80,7 @@ type AddBlogPostResult = BlogPost | { errors: any } | null;
 
 const addBlogPost = async (
   apiClient: ApiClient,
-  data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
+  data: Omit<BlogPost, 'id'> & { eye_catch?: string | File | Blob | Buffer | NodeJS.ReadableStream }
 ): Promise<AddBlogPostResult> => {
   try {
     const response = await apiClient.add({ endpoint: "blogPosts", data, options: { admin: true } }) as any;
