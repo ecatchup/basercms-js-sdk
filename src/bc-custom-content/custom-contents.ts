@@ -8,7 +8,7 @@ export interface CustomContent {
   custom_table_id: number;
   description?: string;
   template?: string;
-  widget_area?: number;
+  widget_area?: number|null;
   list_count?: number;
   list_order?: string;
   list_direction?: string;
