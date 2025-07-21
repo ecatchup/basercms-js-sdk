@@ -6,14 +6,13 @@ import { ApiClient } from '../basercms-js-sdk';
 export interface CustomContent {
   id: number;
   custom_table_id: number;
-  description: string;
-  template: string;
-  widget_area: number;
-  list_count: number;
-  list_order: string;
-  list_direction: string;
-  created: string;
-  modified: string;
+  description?: string;
+  template?: string;
+  widget_area?: number;
+  list_count?: number;
+  list_order?: string;
+  list_direction?: string;
+  content: any;
 }
 
 /**
@@ -48,6 +47,9 @@ export const addCustomContent = async (
   data: Omit<CustomContent, 'id'>
 ): Promise<CustomContent | { errors: any } | null> => {
   try {
+    if(data.content.status !== undefined) {
+      data.content.self_status = data.content.status;
+    }
     const response: any = await apiClient.add({ endpoint: 'customContents', data, options: { admin: true } });
     if (response?.customContent) return response.customContent as CustomContent;
     if (response?.errors) return { errors: response.errors };
