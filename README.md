@@ -35,8 +35,6 @@ console.log(user);
 ### ユーザー一覧取得
 ```typescript
 import { ApiClient, getUsers } from '@ryuring/basercms-js-sdk';
-const apiClient = new ApiClient();
-await apiClient.login();
 const users = await getUsers(apiClient);
 console.log(users);
 ```
@@ -46,6 +44,44 @@ console.log(users);
 import { getUserByEmail } from '@ryuring/basercms-js-sdk';
 const user = await getUserByEmail(apiClient, 'foo@example.com');
 console.log(user);
+```
+
+### ユーザー新規追加
+```typescript
+import { addUser } from '@ryuring/basercms-js-sdk';
+const newUser = await addUser(apiClient, {
+  name: 'newuser',
+  password_1: 'password123',
+  password_2: 'password123',
+  real_name_1: '山田',
+  real_name_2: '太郎',
+  email: 'newuser@example.com',
+  nickname: 'やまだ',
+  status: true,
+  user_groups: {
+    _ids: [1]
+  }
+});
+console.log(newUser);
+```
+
+### ユーザー編集
+```typescript
+import { editUser } from '@ryuring/basercms-js-sdk';
+const updated = await editUser(apiClient, '1', {
+  real_name_1: '田中',
+  real_name_2: '次郎',
+  email: 'updated@example.com',
+  status: true
+});
+console.log(updated);
+```
+
+### ユーザー削除
+```typescript
+import { deleteUser } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteUser(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
 ```
 
 ---
@@ -114,6 +150,146 @@ console.log(deleted); // true:成功, false:失敗
 
 ---
 
+### ブログカテゴリ一覧取得
+```typescript
+import { getBlogCategories } from '@ryuring/basercms-js-sdk';
+const blogContentId = 1;
+const categories = await getBlogCategories(apiClient, blogContentId);
+console.log(categories);
+```
+
+### ブログカテゴリ単一取得
+```typescript
+import { getBlogCategory } from '@ryuring/basercms-js-sdk';
+const category = await getBlogCategory(apiClient, 1);
+console.log(category);
+```
+
+### ブログカテゴリ新規追加
+```typescript
+import { addBlogCategory } from '@ryuring/basercms-js-sdk';
+const newCategory = await addBlogCategory(apiClient, {
+  name: 'new-category',
+  blog_content_id: 1,
+  title: '新しいカテゴリ',
+  parent_id: null
+});
+console.log(newCategory);
+```
+
+### ブログカテゴリ編集
+```typescript
+import { editBlogCategory } from '@ryuring/basercms-js-sdk';
+const updated = await editBlogCategory(apiClient, '1', {
+  title: '更新されたカテゴリ',
+  name: 'updated-category'
+});
+console.log(updated);
+```
+
+### ブログカテゴリ削除
+```typescript
+import { deleteBlogCategory } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteBlogCategory(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
+```
+
+---
+
+### ブログタグ一覧取得
+```typescript
+import { getBlogTags } from '@ryuring/basercms-js-sdk';
+const tags = await getBlogTags(apiClient);
+console.log(tags);
+```
+
+### ブログタグ単一取得
+```typescript
+import { getBlogTag } from '@ryuring/basercms-js-sdk';
+const tag = await getBlogTag(apiClient, 1);
+console.log(tag);
+```
+
+### ブログタグ新規追加
+```typescript
+import { addBlogTag } from '@ryuring/basercms-js-sdk';
+const newTag = await addBlogTag(apiClient, {
+  name: 'new-tag'
+});
+console.log(newTag);
+```
+
+### ブログタグ編集
+```typescript
+import { editBlogTag } from '@ryuring/basercms-js-sdk';
+const updated = await editBlogTag(apiClient, '1', {
+  name: 'updated-tag'
+});
+console.log(updated);
+```
+
+### ブログタグ削除
+```typescript
+import { deleteBlogTag } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteBlogTag(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
+```
+
+---
+
+### ブログコンテンツ一覧取得
+```typescript
+import { getBlogContents } from '@ryuring/basercms-js-sdk';
+const contents = await getBlogContents(apiClient);
+console.log(contents);
+```
+
+### ブログコンテンツ単一取得
+```typescript
+import { getBlogContent } from '@ryuring/basercms-js-sdk';
+const content = await getBlogContent(apiClient, 1);
+console.log(content);
+```
+
+### ブログコンテンツ新規追加
+```typescript
+import { addBlogContent } from '@ryuring/basercms-js-sdk';
+const newContent = await addBlogContent(apiClient, {
+  description: 'ブログの説明',
+  template: 'default',
+  list_count: 10,
+  list_direction: 'DESC',
+  feed_count: 10,
+  tag_use: true,
+  comment_use: true,
+  comment_approve: false,
+  widget_area: 2,
+  eye_catch_size: 'medium',
+  use_content: true
+});
+console.log(newContent);
+```
+
+### ブログコンテンツ編集
+```typescript
+import { editBlogContent } from '@ryuring/basercms-js-sdk';
+const updated = await editBlogContent(apiClient, '1', {
+  description: '更新された説明',
+  list_count: 20,
+  tag_use: false
+});
+console.log(updated);
+```
+
+### ブログコンテンツ削除
+```typescript
+import { deleteBlogContent } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteBlogContent(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
+```
+
+---
+
 ### カスタムテーブル一覧取得
 
 ```typescript
@@ -158,6 +334,58 @@ console.log(links);
 import { getCustomLink } from '@ryuring/basercms-js-sdk';
 const link = await getCustomLink(apiClient, '1');
 console.log(link);
+```
+
+### カスタムリンク新規追加
+```typescript
+import { addCustomLink } from '@ryuring/basercms-js-sdk';
+const newLink = await addCustomLink(apiClient, {
+  custom_table_id: 1,
+  custom_field_id: 1,
+  name: 'new_link',
+  title: '新しいリンク',
+  no: 1,
+  parent_id: null,
+  level: 1,
+  lft: 1,
+  rght: 2,
+  before_head: null,
+  after_head: null,
+  description: 'リンクの説明',
+  attention: null,
+  options: null,
+  class: null,
+  group_valid: false,
+  before_linefeed: false,
+  after_linefeed: false,
+  use_loop: false,
+  display_admin_list: true,
+  display_front: true,
+  search_target_admin: false,
+  search_target_front: false,
+  use_api: true,
+  required: false,
+  status: true
+});
+console.log(newLink);
+```
+
+### カスタムリンク編集
+```typescript
+import { editCustomLink } from '@ryuring/basercms-js-sdk';
+const updated = await editCustomLink(apiClient, '1', {
+  title: '更新されたタイトル',
+  description: '更新された説明',
+  status: false
+});
+console.log(updated);
+```
+
+### カスタムリンク削除
+```typescript
+import { deleteCustomLink } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteCustomLink(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
 ```
 
 ---
@@ -286,9 +514,32 @@ const newContent = await addCustomContent(apiClient, {
   list_count: 10,
   list_order: 'id',
   list_direction: 'asc',
-  created: '',
-  modified: ''
+  content: {
+    status: true,
+    title: 'コンテンツタイトル'
+  }
 });
 console.log(newContent);
+```
+
+### カスタムコンテンツ編集
+```typescript
+import { editCustomContent } from '@ryuring/basercms-js-sdk';
+const updated = await editCustomContent(apiClient, '1', {
+  description: '更新された説明',
+  list_count: 20,
+  content: {
+    title: '更新されたタイトル',
+    status: false
+  }
+});
+console.log(updated);
+```
+
+### カスタムコンテンツ削除
+```typescript
+import { deleteCustomContent } from '@ryuring/basercms-js-sdk';
+const deleted = await deleteCustomContent(apiClient, '1');
+console.log(deleted); // true:成功, false:失敗
 ```
 
