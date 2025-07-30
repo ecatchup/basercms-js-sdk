@@ -38,6 +38,10 @@ export class ApiClient {
       plugin: 'bc-blog',
       controller: 'blog_categories',
     },
+    blogTags: {
+      plugin: 'bc-blog',
+      controller: 'blog_tags',
+    },
     blogContents: {
       plugin: 'bc-blog',
       controller: 'blog_contents',

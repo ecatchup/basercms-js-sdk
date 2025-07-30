@@ -59,3 +59,61 @@ export const getCustomLinks = async (
   if (!response || !response.customLinks) return [];
   return response.customLinks as CustomLink[];
 };
+
+/**
+ * カスタムリンク新規追加
+ */
+export const addCustomLink = async (
+  apiClient: ApiClient,
+  data: Omit<CustomLink, 'id'>
+): Promise<CustomLink | { errors: any } | null> => {
+  try {
+    const response: any = await apiClient.add({ endpoint: 'customLinks', data, options: { admin: true } });
+    if (response?.customLink) return response.customLink as CustomLink;
+    if (response?.errors) return { errors: response.errors };
+    return null;
+  } catch (error: any) {
+    console.error('addCustomLink error:', error.message);
+    if (error.response && error.response.data && error.response.data.errors) {
+      throw new Error(JSON.stringify({ errors: error.response.data.errors }));
+    }
+    throw error;
+  }
+};
+
+/**
+ * カスタムリンク編集
+ */
+export const editCustomLink = async (
+  apiClient: ApiClient,
+  id: string,
+  data: Partial<Omit<CustomLink, 'id'>>
+): Promise<CustomLink | null> => {
+  try {
+    const response: any = await apiClient.edit({ endpoint: 'customLinks', id, data, options: { admin: true } });
+    return response?.customLink ?? null;
+  } catch (error: any) {
+    if (error.status === 400) {
+      console.error('editCustomLink error:', error.message);
+      throw new Error(`Validation error: ${JSON.stringify(error.response.data.errors || {})}`);
+    }
+    console.error('editCustomLink error:', error.message);
+    throw error;
+  }
+};
+
+/**
+ * カスタムリンク削除
+ */
+export const deleteCustomLink = async (
+  apiClient: ApiClient,
+  id: string
+): Promise<boolean> => {
+  try {
+    await apiClient.delete({ endpoint: 'customLinks', id, options: { admin: true } });
+    return true;
+  } catch (error: any) {
+    console.error('deleteCustomLink error:', error.message);
+    throw error;
+  }
+};
