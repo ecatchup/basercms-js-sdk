@@ -107,7 +107,7 @@ export class ApiClient {
   /**
    * ログイン状態をチェック
    */
-  private isLogin(): boolean {
+  public isLogin(): boolean {
     return !!this.axiosInstance.defaults.headers['Authorization'];
   }
 
