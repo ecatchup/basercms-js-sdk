@@ -43,16 +43,19 @@ const getBlogTags = async (
  * 単一のブログタグを取得
  * @param apiClient APIクライアント
  * @param tagId タグID
+ * @param options 追加オプション
  * @returns タグオブジェクト or null
  */
 const getBlogTag = async (
     apiClient: ApiClient,
-    tagId: number
+    tagId: number,
+    options: Record<string, any> = {}
 ): Promise<BlogTag | null> => {
     try {
         const result: { blogTag?: BlogTag } | null = await apiClient.getView<{ blogTag?: BlogTag }>({
             endpoint: 'blogTags',
-            id: tagId.toString()
+            id: tagId.toString(),
+            options
         });
         if (result?.blogTag) return result.blogTag;
         return null;
@@ -75,8 +78,7 @@ const addBlogTag = async (
     try {
         const response: any = await apiClient.add({
             endpoint: 'blogTags',
-            data,
-            options: { admin: true }
+            data
         });
         if (response?.blogTag) return response.blogTag as BlogTag;
         if (response?.errors) return { errors: response.errors };
@@ -106,8 +108,7 @@ const editBlogTag = async (
         const response: any = await apiClient.edit({
             endpoint: 'blogTags',
             id: tagId,
-            data,
-            options: { admin: true }
+            data
         });
         return response?.blogTag ?? null;
     } catch (error: any) {
@@ -133,8 +134,7 @@ const deleteBlogTag = async (
     try {
         await apiClient.delete({
             endpoint: 'blogTags',
-            id: tagId,
-            options: { admin: true }
+            id: tagId
         });
         return true;
     } catch (error: any) {

@@ -33,8 +33,7 @@ export const getCustomFields = async (
   apiClient: ApiClient,
   options?: Record<string, any>
 ): Promise<CustomField[]> => {
-  const opts = { ...(options || {}), admin: true };
-  const response: any = await apiClient.getIndex({ endpoint: 'customFields', options: opts });
+  const response: any = await apiClient.getIndex({ endpoint: 'customFields', options });
   if (!response || !response.customFields) return [];
   return response.customFields as CustomField[];
 };
@@ -44,9 +43,10 @@ export const getCustomFields = async (
  */
 export const getCustomField = async (
   apiClient: ApiClient,
-  id: string
+  id: string,
+  options?: Record<string, any>
 ): Promise<CustomField | null> => {
-  const response: any = await apiClient.getView({ endpoint: 'customFields', id, options: { admin: true } });
+  const response: any = await apiClient.getView({ endpoint: 'customFields', id, options });
   return response?.customField ?? null;
 };
 
@@ -58,7 +58,7 @@ export const addCustomField = async (
   data: Omit<CustomField, 'id'>
 ): Promise<CustomField | { errors: any } | null> => {
   try {
-    const response: any = await apiClient.add({ endpoint: 'customFields', data, options: { admin: true } });
+    const response: any = await apiClient.add({ endpoint: 'customFields', data });
     if (response?.customField) return response.customField as CustomField;
     if (response?.errors) return { errors: response.errors };
     return null;
@@ -80,7 +80,7 @@ export const editCustomField = async (
   data: Partial<Omit<CustomField, 'id'>>
 ): Promise<CustomField | null> => {
   try {
-    const response: any = await apiClient.edit({ endpoint: 'customFields', id, data, options: { admin: true } });
+    const response: any = await apiClient.edit({ endpoint: 'customFields', id, data });
     return response?.customField ?? null;
   } catch (error: any) {
     if (error.status === 400) {
@@ -100,7 +100,7 @@ export const deleteCustomField = async (
   id: string
 ): Promise<boolean> => {
   try {
-    await apiClient.delete({ endpoint: 'customFields', id, options: { admin: true } });
+    await apiClient.delete({ endpoint: 'customFields', id });
     return true;
   } catch (error: any) {
     console.error('deleteCustomField error:', error.message);

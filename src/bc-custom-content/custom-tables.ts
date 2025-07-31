@@ -23,8 +23,7 @@ export const getCustomTables = async (
   apiClient: ApiClient,
   options?: Record<string, any>
 ): Promise<CustomTable[]> => {
-  const opts = { ...(options || {}), admin: true };
-  const response: any = await apiClient.getIndex({ endpoint: 'customTables', options: opts });
+  const response: any = await apiClient.getIndex({ endpoint: 'customTables', options });
   if (!response || !response.customTables) return [];
   return response.customTables as CustomTable[];
 };
@@ -34,9 +33,10 @@ export const getCustomTables = async (
  */
 export const getCustomTable = async (
   apiClient: ApiClient,
-  id: string
+  id: string,
+  options?: Record<string, any>
 ): Promise<CustomTable | null> => {
-  const response: any = await apiClient.getView({ endpoint: 'customTables', id, options: { admin: true } });
+  const response: any = await apiClient.getView({ endpoint: 'customTables', id, options });
   return response?.customTable ?? null;
 };
 
@@ -48,7 +48,7 @@ export const addCustomTable = async (
   data: Omit<CustomTable, 'id'>
 ): Promise<CustomTable | { errors: any } | null> => {
   try {
-    const response: any = await apiClient.add({ endpoint: 'customTables', data, options: { admin: true } });
+    const response: any = await apiClient.add({ endpoint: 'customTables', data });
     if (response?.customTable) return response.customTable as CustomTable;
     if (response?.errors) return { errors: response.errors };
     return null;
@@ -70,7 +70,7 @@ export const editCustomTable = async (
   data: Partial<CustomTable>
 ): Promise<CustomTable | null> => {
   try {
-    const response: any = await apiClient.edit({ endpoint: 'customTables', id, data, options: { admin: true } });
+    const response: any = await apiClient.edit({ endpoint: 'customTables', id, data });
     return response?.customTable ?? null;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.errors) {
@@ -90,7 +90,7 @@ export const deleteCustomTable = async (
   id: string
 ): Promise<boolean> => {
   try {
-    await apiClient.delete({ endpoint: 'customTables', id, options: { admin: true } });
+    await apiClient.delete({ endpoint: 'customTables', id });
     return true;
   } catch (error: any) {
     console.error('deleteCustomTable error:', error.message);

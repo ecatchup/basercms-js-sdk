@@ -105,16 +105,25 @@ export class ApiClient {
   }
 
   /**
+   * ログイン状態をチェック
+   */
+  private isLogin(): boolean {
+    return !!this.axiosInstance.defaults.headers['Authorization'];
+  }
+
+  /**
+   * ベースURLを作成
+   */
+  private createBaseUrl(): string {
+    return this.isLogin() ? '/baser/api/admin/' : '/baser/api/';
+  }
+
+  /**
    * レコード追加
    */
   public async add<T>({ endpoint, data, options }: { endpoint: string; data: any; options?: Record<string, any> }): Promise<T | null> {
-    let baseUrl = '/baser/api/';
-    let opts = options ? { ...options } : undefined;
-    if (opts && opts['admin'] !== undefined) {
-      baseUrl += 'admin/';
-      delete opts['admin'];
-    }
-    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const baseUrl = this.createBaseUrl();
+    const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/add.json${query}`;
 
     // どのフィールドでもファイル型があればmultipart/form-dataで送信
@@ -178,13 +187,8 @@ export class ApiClient {
    * レコード編集
    */
   public async edit<T>({ endpoint, id, data, options }: { endpoint: string; id: string; data: any; options?: Record<string, any> }): Promise<T | null> {
-    let baseUrl = '/baser/api/';
-    let opts = options ? { ...options } : undefined;
-    if (opts && opts['admin'] !== undefined) {
-      baseUrl += 'admin/';
-      delete opts['admin'];
-    }
-    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const baseUrl = this.createBaseUrl();
+    const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/edit/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.post(url, { ...data, id });
@@ -202,13 +206,8 @@ export class ApiClient {
    * レコード削除
    */
   public async delete<T>({ endpoint, id, options}: { endpoint: string; id: string; options?: Record<string, any> }): Promise<T | null> {
-    let baseUrl = '/baser/api/';
-    let opts = options ? { ...options } : undefined;
-    if (opts && opts['admin'] !== undefined) {
-      baseUrl += 'admin/';
-      delete opts['admin'];
-    }
-    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const baseUrl = this.createBaseUrl();
+    const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/delete/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.post(url, { id });
@@ -226,11 +225,7 @@ export class ApiClient {
    * 複数レコード取得
    */
   public async getIndex<T>({ endpoint, options }: GetIndexRequest): Promise<T | null> {
-    let baseUrl = '/baser/api/';
-    if (options && options['admin'] !== undefined) {
-      baseUrl += 'admin/';
-      delete options['admin'];
-    }
+    const baseUrl = this.createBaseUrl();
     const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/index.json${query}`;
     try {
@@ -250,13 +245,8 @@ export class ApiClient {
    * 単一レコード取得
    */
   public async getView<T>({ endpoint, id, options }: GetViewRequest): Promise<T | null> {
-    let baseUrl = '/baser/api/';
-    let opts = options ? { ...options } : undefined;
-    if (opts && opts['admin'] !== undefined) {
-      baseUrl += 'admin/';
-      delete opts['admin'];
-    }
-    const query = opts ? '?' + new URLSearchParams(opts as Record<string, string>).toString() : '';
+    const baseUrl = this.createBaseUrl();
+    const query = options ? '?' + new URLSearchParams(options as Record<string, string>).toString() : '';
     const url = `${baseUrl}${this.ROUTE[endpoint].plugin}/${this.ROUTE[endpoint].controller}/view/${id}.json${query}`;
     try {
       const response = await this.axiosInstance.get(url);

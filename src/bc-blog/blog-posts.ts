@@ -36,9 +36,9 @@ const formatEyeCatch = (blogPost: BlogPost): BlogPost => ({
  * @param options 追加オプション
  * @returns 整形済みブログ記事配列
  */
-const getBlogPosts = async (apiClient: ApiClient, options?: {}): Promise<BlogPost[]> => {
+const getBlogPosts = async (apiClient: ApiClient, options?: Record<string, any>): Promise<BlogPost[]> => {
   try {
-    const response: any = await apiClient.getIndex({ endpoint: "blogPosts", ...options });
+    const response: any = await apiClient.getIndex({ endpoint: "blogPosts", options });
     if (!response || !response.blogPosts) {
       return [];
     }
@@ -58,11 +58,12 @@ type BlogPostResponse = { blogPost: BlogPost };
  * 単一のブログ記事を取得
  * @param apiClient ApiClientインスタンス
  * @param id 記事ID
+ * @param options 追加オプション
  * @returns 整形済みブログ記事 or null
  */
-const getBlogPost = async (apiClient: ApiClient, id: string): Promise<BlogPost | null> => {
+const getBlogPost = async (apiClient: ApiClient, id: string, options?: Record<string, any>): Promise<BlogPost | null> => {
   try {
-    const response = await apiClient.getView({ endpoint: "blogPosts", id }) as BlogPostResponse | null;
+    const response = await apiClient.getView({ endpoint: "blogPosts", id, options }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
   } catch (error: any) {
     console.error('getBlogPost error:', error.message);
@@ -83,7 +84,7 @@ const addBlogPost = async (
   data: Omit<BlogPost, 'id'> & { eye_catch?: string | File | Blob | Buffer | NodeJS.ReadableStream }
 ): Promise<AddBlogPostResult> => {
   try {
-    const response = await apiClient.add({ endpoint: "blogPosts", data, options: { admin: true } }) as any;
+    const response = await apiClient.add({ endpoint: "blogPosts", data }) as any;
     if (response?.blogPost) {
       return formatEyeCatch(response.blogPost);
     }
@@ -93,7 +94,7 @@ const addBlogPost = async (
     return null;
   } catch (error: any) {
     if (error.status === 400) {
-      console.error('addBlogPost error:', error.message);  
+      console.error('addBlogPost error:', error.message);
       throw new Error(`Validation error: ${JSON.stringify(error.response?.data?.errors || {})}`);
     }
     console.error('addBlogPost error:', error.message);
@@ -111,14 +112,15 @@ const addBlogPost = async (
 const editBlogPost = async (
   apiClient: ApiClient,
   id: string,
-  data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string }
+  data: Omit<BlogPost, 'id' | 'posted' | 'eye_catch'> & { eye_catch?: string },
+  options?: Record<string, any>
 ): Promise<BlogPost | null> => {
   try {
-    const response = await apiClient.edit({ endpoint: "blogPosts", id, data }) as BlogPostResponse | null;
+    const response = await apiClient.edit({ endpoint: "blogPosts", id, data, options }) as BlogPostResponse | null;
     return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
   } catch (error: any) {
     if (error.status === 400) {
-      console.error('editBlogPost error:', error.message);  
+      console.error('editBlogPost error:', error.message);
       throw new Error(`Validation error: ${JSON.stringify(error.response?.data?.errors || {})}`);
     }
     console.error('editBlogPost error:', error.message);
@@ -134,10 +136,11 @@ const editBlogPost = async (
  */
 const deleteBlogPost = async (
   apiClient: ApiClient,
-  id: string
+  id: string,
+  options?: Record<string, any>
 ): Promise<boolean> => {
   try {
-    await apiClient.delete({ endpoint: "blogPosts", id });
+    await apiClient.delete({ endpoint: "blogPosts", id, options });
     return true;
   } catch (error: any) {
     console.error('deleteBlogPost error:', error.message);

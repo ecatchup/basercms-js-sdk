@@ -50,16 +50,19 @@ const getBlogCategories = async (
  * 単一のブログカテゴリを取得
  * @param apiClient APIクライアント
  * @param categoryId カテゴリID
+ * @param options 追加オプション
  * @returns カテゴリオブジェクト or null
  */
 const getBlogCategory = async (
     apiClient: ApiClient,
-    categoryId: number
+    categoryId: number,
+    options: Record<string, any> = {}
 ): Promise<BlogCategory | null> => {
     try {
         const result: { blogCategory?: BlogCategory } | null = await apiClient.getView<{ blogCategory?: BlogCategory }>({
             endpoint: 'blogCategories',
-            id: categoryId.toString()
+            id: categoryId.toString(),
+            options
         });
         if (result?.blogCategory) return result.blogCategory;
         return null;
@@ -82,8 +85,7 @@ const addBlogCategory = async (
     try {
         const response: any = await apiClient.add({
             endpoint: 'blogCategories',
-            data,
-            options: { admin: true }
+            data
         });
         if (response?.blogCategory) return response.blogCategory as BlogCategory;
         if (response?.errors) return { errors: response.errors };
@@ -113,8 +115,7 @@ const editBlogCategory = async (
         const response: any = await apiClient.edit({
             endpoint: 'blogCategories',
             id: categoryId,
-            data,
-            options: { admin: true }
+            data
         });
         return response?.blogCategory ?? null;
     } catch (error: any) {
@@ -140,8 +141,7 @@ const deleteBlogCategory = async (
     try {
         await apiClient.delete({
             endpoint: 'blogCategories',
-            id: categoryId,
-            options: { admin: true }
+            id: categoryId
         });
         return true;
     } catch (error: any) {

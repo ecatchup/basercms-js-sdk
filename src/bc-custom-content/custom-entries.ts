@@ -30,7 +30,7 @@ export const getCustomEntries = async (
   customTableId: number,
   options?: Record<string, any>
 ): Promise<CustomEntry[]> => {
-  const opts = { ...(options || {}), custom_table_id: customTableId, admin: true };
+  const opts = { ...(options || {}), custom_table_id: customTableId };
   const response: any = await apiClient.getIndex({ endpoint: 'customEntries', options: opts });
   if (!response || !response.entries) return [];
   return response.entries as CustomEntry[];
@@ -45,7 +45,7 @@ export const getCustomEntry = async (
   id: string,
   options?: Record<string, any>
 ): Promise<CustomEntry | null> => {
-  const opts = { ...(options || {}), custom_table_id: customTableId, admin: true };
+  const opts = { ...(options || {}), custom_table_id: customTableId };
   const response: any = await apiClient.getView({ endpoint: 'customEntries', id, options: opts });
   return response?.entry ?? null;
 };
@@ -60,7 +60,7 @@ export const addCustomEntry = async (
   options?: Record<string, any>
 ): Promise<CustomEntry | { errors: any } | null> => {
   try {
-    const opts = { ...(options || {}), custom_table_id: customTableId, admin: true };
+    const opts = { ...(options || {}), custom_table_id: customTableId };
     const response: any = await apiClient.add({ endpoint: 'customEntries', data, options: opts });
     if (response?.entry) return response.entry as CustomEntry;
     if (response?.errors) return { errors: response.errors };
@@ -85,7 +85,7 @@ export const editCustomEntry = async (
   options?: Record<string, any>
 ): Promise<CustomEntry | null> => {
   try {
-    const opts = { ...(options || {}), custom_table_id: customTableId, admin: true };
+    const opts = { ...(options || {}), custom_table_id: customTableId };
     const response: any = await apiClient.edit({ endpoint: 'customEntries', id, data, options: opts });
     return response?.entry ?? null;
   } catch (error: any) {
@@ -108,7 +108,7 @@ export const deleteCustomEntry = async (
   options?: Record<string, any>
 ): Promise<boolean> => {
   try {
-    const opts = { ...(options || {}), custom_table_id: customTableId, admin: true };
+    const opts = { ...(options || {}), custom_table_id: customTableId };
     await apiClient.delete({ endpoint: 'customEntries', id, options: opts });
     return true;
   } catch (error: any) {

@@ -22,8 +22,7 @@ export const getCustomContents = async (
   apiClient: ApiClient,
   options?: Record<string, any>
 ): Promise<CustomContent[]> => {
-  const opts = { ...(options || {}), admin: true };
-  const response: any = await apiClient.getIndex({ endpoint: 'customContents', options: opts });
+  const response: any = await apiClient.getIndex({ endpoint: 'customContents', options });
   if (!response || !response.customContents) return [];
   return response.customContents as CustomContent[];
 };
@@ -33,9 +32,10 @@ export const getCustomContents = async (
  */
 export const getCustomContent = async (
   apiClient: ApiClient,
-  id: string
+  id: string,
+  options?: Record<string, any>
 ): Promise<CustomContent | null> => {
-  const response: any = await apiClient.getView({ endpoint: 'customContents', id, options: { admin: true } });
+  const response: any = await apiClient.getView({ endpoint: 'customContents', id, options });
   return response?.customContent ?? null;
 };
 
@@ -50,7 +50,7 @@ export const addCustomContent = async (
     if(data.content.status !== undefined) {
       data.content.self_status = data.content.status;
     }
-    const response: any = await apiClient.add({ endpoint: 'customContents', data, options: { admin: true } });
+    const response: any = await apiClient.add({ endpoint: 'customContents', data });
     if (response?.customContent) return response.customContent as CustomContent;
     if (response?.errors) return { errors: response.errors };
     return null;
@@ -72,7 +72,7 @@ export const editCustomContent = async (
   data: Partial<Omit<CustomContent, 'id'>> & { content?: any }
 ): Promise<CustomContent | null> => {
   try {
-    const response: any = await apiClient.edit({ endpoint: 'customContents', id, data, options: { admin: true } });
+    const response: any = await apiClient.edit({ endpoint: 'customContents', id, data });
     return response?.customContent ?? null;
   } catch (error: any) {
     if (error.status === 400) {
@@ -92,7 +92,7 @@ export const deleteCustomContent = async (
   id: string
 ): Promise<boolean> => {
   try {
-    await apiClient.delete({ endpoint: 'customContents', id, options: { admin: true } });
+    await apiClient.delete({ endpoint: 'customContents', id });
     return true;
   } catch (error: any) {
     console.error('deleteCustomContent error:', error.message);

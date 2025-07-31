@@ -3,7 +3,14 @@ import https from 'https';
 
 /**
  * 管理者API用のJWTトークンを取得
- * @param email メールアドレス
+ * @param     const result = await apiClient.getView<any>({
+      endpoint: 'users',
+      id,
+      options: {
+        'user_groups._ids': userGroupIds,
+        ...options
+      }
+    });アドレス
  * @param password パスワード
  * @returns JWTトークン文字列 or null
  */
@@ -56,13 +63,15 @@ export interface User {
  * Eメールアドレスからユーザーデータを取得（ApiClientのgetIndexを利用）
  * @param apiClient APIクライアント
  * @param email メールアドレス
+ * @param options 追加オプション
  * @returns ユーザーデータ or null
  */
 const getUserByEmail = async (
   apiClient: ApiClient,
-  email: string): Promise<User | null> => {
+  email: string,
+  options?: Record<string, any>): Promise<User | null> => {
   try {
-    const result = await apiClient.getIndex<any>({ endpoint: 'users', options: { email, admin: true } });
+    const result = await apiClient.getIndex<any>({ endpoint: 'users', options: { email, ...options } });
     if (result?.user) return result.user as User;
     if (result?.users && Array.isArray(result.users) && result.users.length > 0) return result.users[0] as User;
     return null;
@@ -77,21 +86,24 @@ const getUserByEmail = async (
  * @param apiClient APIクライアント
  * @param id ユーザーID
  * @param userGroupIds ユーザーグループIDの配列（デフォルト: [1]）
+ * @param options 追加オプション
  * @returns ユーザーデータ or null
  */
 const getUser = async (
   apiClient: ApiClient,
   id: string,
-  userGroupIds: number[] = [1]
+  userGroupIds: number[] = [1],
+  options?: Record<string, any>
 ): Promise<User | null> => {
   try {
-    const result = await apiClient.getView<any>({ 
-      endpoint: 'users', 
-      id, 
-      options: { 
-        admin: true,
-        'user_groups._ids': userGroupIds
-      } 
+    const result = await apiClient.getView<any>({
+      endpoint: 'users',
+      id,
+      options: {
+        admin: false,
+        'user_groups._ids': userGroupIds,
+        ...options
+      }
     });
     if (result?.user) return result.user as User;
     return null;
@@ -111,7 +123,7 @@ const getUsers = async (
   apiClient: ApiClient,
   options: Record<string, any> = {}): Promise<User[] | null> => {
   try {
-    const result = await apiClient.getIndex<any>({ endpoint: 'users', options: { ...options, admin: true } });
+    const result = await apiClient.getIndex<any>({ endpoint: 'users', options });
     if (result?.users && Array.isArray(result.users)) return result.users as User[];
     return null;
   } catch (error: any) {
@@ -150,8 +162,7 @@ const addUser = async (
   try {
     const response: any = await apiClient.add({
       endpoint: 'users',
-      data,
-      options: { admin: true }
+      data
     });
     return response?.user ?? null;
   } catch (error: any) {
@@ -180,8 +191,7 @@ const editUser = async (
     const response: any = await apiClient.edit({
       endpoint: 'users',
       id: userId,
-      data,
-      options: { admin: true }
+      data
     });
     return response?.user ?? null;
   } catch (error: any) {
@@ -207,8 +217,7 @@ const deleteUser = async (
   try {
     await apiClient.delete({
       endpoint: 'users',
-      id: userId,
-      options: { admin: true }
+      id: userId
     });
     return true;
   } catch (error: any) {

@@ -45,16 +45,19 @@ const getBlogContents = async (
  * 単一のブログコンテンツを取得
  * @param apiClient APIクライアント
  * @param contentId コンテンツID
+ * @param options 追加オプション
  * @returns ブログコンテンツオブジェクト or null
  */
 const getBlogContent = async (
   apiClient: ApiClient,
-  contentId: number
+  contentId: number,
+  options: Record<string, any> = {}
 ): Promise<BlogContent | null> => {
   try {
     const result: { blogContent?: BlogContent } | null = await apiClient.getView<{ blogContent?: BlogContent }>({
       endpoint: 'blogContents',
-      id: contentId.toString()
+      id: contentId.toString(),
+      options
     });
     if (result?.blogContent) return result.blogContent;
     return null;
@@ -77,8 +80,7 @@ const addBlogContent = async (
   try {
     const response: any = await apiClient.add({
       endpoint: 'blogContents',
-      data,
-      options: { admin: true }
+      data
     });
     if (response?.blogContent) return response.blogContent as BlogContent;
     if (response?.errors) return { errors: response.errors };
@@ -108,8 +110,7 @@ const editBlogContent = async (
     const response: any = await apiClient.edit({
       endpoint: 'blogContents',
       id: contentId,
-      data,
-      options: { admin: true }
+      data
     });
     return response?.blogContent ?? null;
   } catch (error: any) {
@@ -135,8 +136,7 @@ const deleteBlogContent = async (
   try {
     await apiClient.delete({
       endpoint: 'blogContents',
-      id: contentId,
-      options: { admin: true }
+      id: contentId
     });
     return true;
   } catch (error: any) {

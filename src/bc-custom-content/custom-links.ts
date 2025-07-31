@@ -42,8 +42,7 @@ export const getCustomLink = async (
   id: string,
   options?: Record<string, any>
 ): Promise<CustomLink | null> => {
-  const opts = { ...(options || {}), admin: true };
-  const response: any = await apiClient.getView({ endpoint: 'customLinks', id, options: opts });
+  const response: any = await apiClient.getView({ endpoint: 'customLinks', id, options });
   return response?.customLink ?? null;
 };
 
@@ -54,8 +53,7 @@ export const getCustomLinks = async (
   apiClient: ApiClient,
   options?: Record<string, any>
 ): Promise<CustomLink[]> => {
-  const opts = { ...(options || {}), admin: true };
-  const response: any = await apiClient.getIndex({ endpoint: 'customLinks', options: opts });
+  const response: any = await apiClient.getIndex({ endpoint: 'customLinks', options });
   if (!response || !response.customLinks) return [];
   return response.customLinks as CustomLink[];
 };
@@ -68,7 +66,7 @@ export const addCustomLink = async (
   data: Omit<CustomLink, 'id'>
 ): Promise<CustomLink | { errors: any } | null> => {
   try {
-    const response: any = await apiClient.add({ endpoint: 'customLinks', data, options: { admin: true } });
+    const response: any = await apiClient.add({ endpoint: 'customLinks', data });
     if (response?.customLink) return response.customLink as CustomLink;
     if (response?.errors) return { errors: response.errors };
     return null;
@@ -90,7 +88,7 @@ export const editCustomLink = async (
   data: Partial<Omit<CustomLink, 'id'>>
 ): Promise<CustomLink | null> => {
   try {
-    const response: any = await apiClient.edit({ endpoint: 'customLinks', id, data, options: { admin: true } });
+    const response: any = await apiClient.edit({ endpoint: 'customLinks', id, data });
     return response?.customLink ?? null;
   } catch (error: any) {
     if (error.status === 400) {
@@ -110,7 +108,7 @@ export const deleteCustomLink = async (
   id: string
 ): Promise<boolean> => {
   try {
-    await apiClient.delete({ endpoint: 'customLinks', id, options: { admin: true } });
+    await apiClient.delete({ endpoint: 'customLinks', id });
     return true;
   } catch (error: any) {
     console.error('deleteCustomLink error:', error.message);
