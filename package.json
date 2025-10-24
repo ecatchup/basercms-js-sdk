@@ -1,5 +1,5 @@
 {
-  "name": "@ryuring/basercms-js-sdk",
+  "name": "@ecatchup/basercms-js-sdk",
   "version": "1.1.2",
   "description": "baserCMS の API を利用するためのパッケージ",
   "main": "dist/index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ryuring/basercms-js-sdk.git"
+    "url": "git+ssh://git@github.com/ecatchup/basercms-js-sdk.git"
   },
-  "author": "ryuring",
+  "author": "ecatchup",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ryuring/basercms-js-sdk/issues"
+    "url": "https://github.com/ecatchup/basercms-js-sdk/issues"
   },
-  "homepage": "https://github.com/ryuring/basercms-js-sdk#readme",
+  "homepage": "https://github.com/ecatchup/basercms-js-sdk#readme",
   "dependencies": {
     "@types/node": "^22.13.10",
     "axios": "^1.8.2",
