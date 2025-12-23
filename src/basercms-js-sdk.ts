@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { login as userLogin } from './baser-core/users';
+
 import https from 'https';
 
 /**
@@ -18,9 +18,21 @@ type GetViewRequest = {
 } & GetIndexRequest;
 
 /**
+ * ApiClientOptions
+ */
+export interface ApiClientOptions {
+  baseUrl?: string;
+  apiUser?: string;
+  apiPassword?: string;
+}
+
+/**
  * ApiClient
  */
 export class ApiClient {
+  public baseUrl: string;
+  private apiUser?: string;
+  private apiPassword?: string;
 
   /**
    * APIルート定義
@@ -73,11 +85,14 @@ export class ApiClient {
    */
   private axiosInstance: AxiosInstance;
 
-  constructor() {
-    const apiBaseUrl = process.env.API_BASE_URL || 'https://localhost';
+  constructor(options: ApiClientOptions = {}) {
+    this.baseUrl = options.baseUrl || 'https://localhost';
+    this.apiUser = options.apiUser;
+    this.apiPassword = options.apiPassword;
+
     const agent = new https.Agent({ rejectUnauthorized: false });
     this.axiosInstance = axios.create({
-      baseURL: apiBaseUrl,
+      baseURL: this.baseUrl,
       headers: {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
@@ -91,15 +106,31 @@ export class ApiClient {
    * JWTトークンをセット
    */
   public async login(): Promise<void> {
-    const loginUser = process.env.API_USER;
-    const loginPassword = process.env.API_PASSWORD;
+    const loginUser = this.apiUser;
+    const loginPassword = this.apiPassword;
     if (!loginUser || !loginPassword) {
       throw new Error('API_USER または API_PASSWORD が設定されていません。');
     }
     try {
-      const token = await userLogin(loginUser, loginPassword);
-      this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+      const response = await this.axiosInstance.post(
+        '/baser/api/admin/baser-core/users/login.json',
+        { email: loginUser, password: loginPassword }
+      );
+      const token = response.data?.access_token;
+      if (token) {
+        this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        throw new Error('認証に失敗しました。トークンが取得できませんでした。');
+      }
     } catch (error: any) {
+      if (
+        error.code === 'ECONNREFUSED' ||
+        error.code === 'ENOTFOUND' ||
+        error.code === 'ETIMEDOUT' ||
+        (error.response && (error.response.status === 503 || error.response.status === 502 || error.response.status === 504))
+      ) {
+        throw new Error('サーバーに接続できませんでした。APIサーバーの状態を確認してください。');
+      }
       throw error;
     }
   }

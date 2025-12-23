@@ -6,19 +6,18 @@
 npm intall @ecatchup/basercms-js-sdk
 ```
 
-ルートに .env を配置する
-```bash
-# baserCMSを配置しているURLを記述
-API_BASE_URL=https://example.com
-API_USER="foo@example.com"
-API_PASSWORD="baserCMS1234"
-```
+
 ## Usage
 
 ### apiClientのインスタンスを生成とログイン
 ```typescript
 import { ApiClient } from '@ecatchup/basercms-js-sdk';
-const apiClient = new ApiClient();
+
+const apiClient = new ApiClient({
+  baseUrl: 'https://example.com', // baserCMSを設置しているURL
+  apiUser: 'foo@example.com', // ログインユーザーのメールアドレス
+  apiPassword: 'baserCMS1234' // ログインユーザーのパスワード
+});
 await apiClient.login();
 ```
 各APIは `ApiClient` のインスタンスを生成し、`login()` 実行後に利用してください。
@@ -90,7 +89,7 @@ console.log(deleted); // true:成功, false:失敗
 ブログ記事一覧を取得する
 
 ```javascript
-import { apiClinet, getBlogPosts } from "@ecatchup/basercms-js-sdk";
+import { ApiClient, getBlogPosts } from "@ecatchup/basercms-js-sdk";
 import type { BlogPost } from "@ecatchup/basercms-js-sdk";
 
 const posts = await getBlogPosts(apiClient);
@@ -103,7 +102,7 @@ posts.map((post: BlogPost) => {
 id を指定してブログ記事を取得する
 
 ```javascript
-import { apiClient, getBlogPost } from "@ecatchup/basercms-js-sdk";
+import { ApiClient, getBlogPost } from "@ecatchup/basercms-js-sdk";
 import type { BlogPost } from "@ecatchup/basercms-js-sdk";
 
 const post = await getBlogPost(apiClient, 1);

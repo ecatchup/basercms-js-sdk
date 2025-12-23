@@ -14,12 +14,11 @@ import https from 'https';
  * @param password パスワード
  * @returns JWTトークン文字列 or null
  */
-const login = async (email: string, password: string): Promise<string | null> => {
+const login = async (email: string, password: string, baseUrl: string = 'https://localhost'): Promise<string | null> => {
   try {
-    const baseURL = process.env.API_BASE_URL || 'https://localhost';
     const agent = new https.Agent({ rejectUnauthorized: false });
     const response = await axios.post(
-      `${baseURL}/baser/api/admin/baser-core/users/login.json`,
+      `${baseUrl}/baser/api/admin/baser-core/users/login.json`,
       { email, password },
       {
         headers: { 'Content-Type': 'application/json' },

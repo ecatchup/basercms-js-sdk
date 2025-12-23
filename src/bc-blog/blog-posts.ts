@@ -1,6 +1,5 @@
 import { ApiClient } from '../basercms-js-sdk';
-const BASE_URL = process.env.API_BASE_URL;
-const IMAGE_BASE_URL = `${BASE_URL}/files/blog/1/blog_posts/`;
+
 
 /**
  * ブログ記事の型定義
@@ -23,12 +22,16 @@ interface BlogPost {
 /**
  * アイキャッチ画像のURLを整形
  * @param blogPost ブログ記事オブジェクト
+ * @param baseUrl ベースURL
  * @returns 整形済みブログ記事オブジェクト
  */
-const formatEyeCatch = (blogPost: BlogPost): BlogPost => ({
-  ...blogPost,
-  eye_catch: blogPost.eye_catch ? (IMAGE_BASE_URL + blogPost.eye_catch) : ''
-});
+const formatEyeCatch = (blogPost: BlogPost, baseUrl: string): BlogPost => {
+  const imageBaseUrl = `${baseUrl}/files/blog/${blogPost.blog_content_id}/blog_posts/`;
+  return {
+    ...blogPost,
+    eye_catch: blogPost.eye_catch ? (imageBaseUrl + blogPost.eye_catch) : ''
+  };
+};
 
 /**
  * ブログ記事一覧を取得
@@ -42,7 +45,8 @@ const getBlogPosts = async (apiClient: ApiClient, options?: Record<string, any>)
     if (!response || !response.blogPosts) {
       return [];
     }
-    return response.blogPosts.map((post: any): BlogPost => formatEyeCatch(post)) ?? [];
+    const baseUrl = apiClient.baseUrl;
+    return response.blogPosts.map((post: any): BlogPost => formatEyeCatch(post, baseUrl)) ?? [];
   } catch (error: any) {
     console.error('getBlogPosts error:', error.message);
     throw error;
@@ -64,7 +68,7 @@ type BlogPostResponse = { blogPost: BlogPost };
 const getBlogPost = async (apiClient: ApiClient, id: string, options?: Record<string, any>): Promise<BlogPost | null> => {
   try {
     const response = await apiClient.getView({ endpoint: "blogPosts", id, options }) as BlogPostResponse | null;
-    return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+    return response?.blogPost ? formatEyeCatch(response.blogPost, apiClient.baseUrl) : null;
   } catch (error: any) {
     console.error('getBlogPost error:', error.message);
     throw error;
@@ -86,7 +90,7 @@ const addBlogPost = async (
   try {
     const response = await apiClient.add({ endpoint: "blogPosts", data }) as any;
     if (response?.blogPost) {
-      return formatEyeCatch(response.blogPost);
+      return formatEyeCatch(response.blogPost, apiClient.baseUrl);
     }
     if (response?.errors) {
       return { errors: response.errors };
@@ -117,7 +121,7 @@ const editBlogPost = async (
 ): Promise<BlogPost | null> => {
   try {
     const response = await apiClient.edit({ endpoint: "blogPosts", id, data, options }) as BlogPostResponse | null;
-    return response?.blogPost ? formatEyeCatch(response.blogPost) : null;
+    return response?.blogPost ? formatEyeCatch(response.blogPost, apiClient.baseUrl) : null;
   } catch (error: any) {
     if (error.status === 400) {
       console.error('editBlogPost error:', error.message);
