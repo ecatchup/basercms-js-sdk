@@ -86,7 +86,7 @@ export class ApiClient {
   private axiosInstance: AxiosInstance;
 
   constructor(options: ApiClientOptions = {}) {
-    this.baseUrl = options.baseUrl || 'https://localhost';
+    this.baseUrl = options.baseUrl || '';
     this.apiUser = options.apiUser;
     this.apiPassword = options.apiPassword;
 
